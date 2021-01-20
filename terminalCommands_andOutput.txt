@@ -1,4 +1,4 @@
-cd 214/project4 
+cd <directoryPath>
 
 make clean; make
 
