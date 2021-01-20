@@ -1,0 +1,103 @@
+-----------------------------------------------------------------------------------
+Sagnik Mukherjee
+December 10, 2020
+-----------------------------------------------------------------------------------
+CASE 1: All parts of joke have valid format, content, and length.
+
+SERVER
+
+Waiting for connection...
+Server Sent... REG|13|Knock, knock.|
+From Client... REG|12|Who's there?|
+Server Sent... REG|9|Dijkstra.|
+From Client... REG|14|Dijkstra, who?|
+Server Sent... REG|50|That path was taking too long, so I let myself in.|
+From Client... REG|4|Ahh!|
+
+CLIENT
+
+From Server... REG|13|Knock, knock.|
+Client Sent... REG|12|Who's there?|
+From Server... REG|9|Dijkstra.|
+Client Sent... REG|14|Dijkstra, who?|
+From Server... REG|50|That path was taking too long, so I let myself in.|
+Client Sent... REG|4|Ahh!|
+-----------------------------------------------------------------------------------
+CASE 2: First message from client has invalid format.
+
+SERVER
+
+Waiting for connection...
+Server Sent... REG|13|Knock, knock.|
+
+From Client... REG|12!
+M1FT - message 1 format was broken (did not include a message type, missing or too many '|')
+
+CLIENT
+
+From Server... REG|13|Knock, knock.|
+Client Sent... REG|12!Who's there?!
+From Server... ERR|M1FT|
+Connection reset by peer
+-----------------------------------------------------------------------------------
+CASE 3: The length value of the second message from the client does not match its actual length.
+
+SERVER
+
+Waiting for connection...
+Server Sent... REG|13|Knock, knock.|
+From Client... REG|12|Who's there?|
+Server Sent... REG|9|Dijkstra.|
+From Client... REG|20|Dijkstra, who?|
+M3LN - message 3 length value was incorrect (i.e. should be M2 length plus six)
+
+CLIENT
+
+From Server... REG|13|Knock, knock.|
+Client Sent... REG|12|Who's there?|
+From Server... REG|9|Dijkstra.|
+Client Sent... REG|20|Dijkstra, who?|
+From Server... ERR|M3LN|
+Client Sent... REG|4|Ahh!|
+-----------------------------------------------------------------------------------
+CASE 4: Third message from client has invalid content.
+
+SERVER
+
+Waiting for connection...
+Server Sent... REG|13|Knock, knock.|
+From Client... REG|12|Who's there?|
+Server Sent... REG|9|Dijkstra.|
+From Client... REG|14|Dijkstra, who?|
+Server Sent... REG|50|That path was taking too long, so I let myself in.|
+From Client... REG|13|wait what 0_0|
+M5CT - message 5 content was not correct (i.e. missing punctuation)
+
+CLIENT
+
+From Server... REG|13|Knock, knock.|
+Client Sent... REG|12|Who's there?|
+From Server... REG|9|Dijkstra.|
+Client Sent... REG|14|Dijkstra, who?|
+From Server... REG|50|That path was taking too long, so I let myself in.|
+Client Sent... REG|13|wait what 0_0|
+-----------------------------------------------------------------------------------
+CASE 5: Second message from client does not have ending pipe symbol.
+(Program would not progress, used Ctrl + C to abort program from the client side.
+
+SERVER
+
+Waiting for connection...
+Server Sent... REG|13|Knock, knock.|
+From Client... REG|12|Who's there?|
+Server Sent... REG|9|Dijkstra.|
+Segmentation fault
+
+CLIENT
+
+From Server... REG|13|Knock, knock.|
+Client Sent... REG|12|Who's there?|
+From Server... REG|9|Dijkstra.|
+Client Sent... REG|14|Dijkstra, who?
+^C
+-----------------------------------------------------------------------------------

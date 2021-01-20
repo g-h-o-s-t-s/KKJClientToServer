@@ -1,0 +1,7 @@
+cd 214/project4 
+
+make clean; make
+
+./KKJserver 22000
+
+./KKJclient 22000
